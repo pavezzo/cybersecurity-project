@@ -1,0 +1,21 @@
+{% extends "pages/base.html" %}
+{% block content %}
+<h2>Create new user</h2>
+<form method="post">
+  {% csrf_token %}
+  <p>Username:</p>
+  <input type="text" name="username"/><br/>
+  <p>Password:</p>
+  <input type="password", name="password"><br/>
+  <p>Security question:</p>
+  <select name="securityq">
+      {% for q in questions %}
+      <option value="{{ q }}">{{ q }}</option>
+      {% endfor %}
+      <option value="">
+  </select>
+  <p>Security answer:</p>
+  <input type="text" name="securitya"><br/>
+  <button type="submit">Create user</button>
+</form>
+{% endblock %}

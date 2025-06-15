@@ -1,0 +1,21 @@
+{% extends "pages/base.html" %}
+{% block content %}
+<h2>Recover account</h2>
+{% if error %}
+<p>{{ error }}</p>
+{% elif password %}
+
+<p>Your password is {{ password }}</p>
+
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    <p>Username:</p>
+    <input type="text" name="username" value={{ username }} /><br/>
+    <p>{{ secq }}</p>
+    <input type="text" name="security_answer"><br/>
+    <button type="submit">Login</button>
+</form>
+
+{% endif %}
+{% endblock %}

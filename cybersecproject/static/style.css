@@ -1,0 +1,11 @@
+.picture {
+    border: 2px solid black;
+}
+
+body, html {
+  height: 100%;
+}
+
+.content {
+  flex: 1 0 auto;
+}

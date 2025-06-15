@@ -1,0 +1,10 @@
+{% extends "pages/base.html" %}
+{% load static %}
+{% block content %}
+<h3>Your pictures</h3>
+{% for f in files %}
+<img src="/files/static/{{ user.username }}/{{ f.name }}"></img>
+<br>
+<a href="/view?name={{ f.name }}">{{ f.name }}</a>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "pages/base.html" %}
+{% block content %}
+<h2>Admin panel</h2>
+<h3>Users</h3>
+{% if users %}
+{% for user in users %}
+    <p>{{ user.username }}</p>
+{% endfor %}
+{% endif %}
+
+<h3>Pictures</h3>
+{% if pictures %}
+{% for pic in pictures %}
+    <div class="picture">
+        <p>Name: {{ pic.name }}</p>
+        <p>Owner: {{ pic.owner.username }}</p>
+    </div>
+{% endfor %}
+{% endif %}
+{% endblock %}
