@@ -2,6 +2,8 @@ from pathlib import Path
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.models import User
 from django.db import connection
 from django.db.utils import IntegrityError
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseNotFound
@@ -10,9 +12,7 @@ from django.shortcuts import render, redirect
 from django_ratelimit.decorators import ratelimit
 
 from cybersecproject.settings import BASE_DIR
-from .models import Picture, User
-
-# Create your views here.
+from .models import Picture
 
 
 @login_required
@@ -52,15 +52,14 @@ def create_user_handler(req: HttpRequest) -> HttpResponse:
     if req.method == "POST":
         username = req.POST.get("username")
         password = req.POST.get("password")
-        securityq = req.POST.get("securityq")
-        securitya = req.POST.get("securitya")
-        user = User(
-            username=username, password=password, security_answer=securitya, security_question=securityq
-        )
+
+        # password = make_password(password)
+
+        user = User(username=username, password=password)
         user.save()
         return redirect("/login")
     elif req.method == "GET":
-        return render(req, "pages/create_user.html", {"questions": User.SECURITY_QUESTIONS})
+        return render(req, "pages/create_user.html")
 
     return redirect("/")
 
@@ -78,7 +77,11 @@ def login_handler(req: HttpRequest) -> HttpResponse:
 
         if user.password != password:
             error = "Wrong password!"
-            return render(req, "pages/login.html", {"error": error, "recover": username})
+            return render(req, "pages/login.html", {"error": error})
+
+        # if not check_password(password, user.password):
+        #     error = "Wrong password!"
+        #     return render(req, "pages/login.html", {"error": error})
 
         login(req, user)
         return redirect("/")
@@ -89,31 +92,6 @@ def login_handler(req: HttpRequest) -> HttpResponse:
 def logout_handler(req: HttpRequest) -> HttpResponse:
     logout(req)
     return redirect("/")
-
-
-def recover_account_handler(req: HttpRequest) -> HttpResponse:
-    if req.method == "GET":
-        username = req.GET.get("username")
-        if User.objects.filter(username=username).exists():
-            user = User.objects.filter(username=username)
-        else:
-            error = "No such account"
-            return render(req, "pages/recover.html", {"error": error})
-
-        secq = user[0].security_question
-        
-        return render(req, "pages/recover.html", {"username": username, "secq": secq})
-    elif req.method == "POST":
-        username = req.POST.get("username")
-        sec_answer = req.POST.get("security_answer")
-
-        if User.objects.filter(username=username).exists():
-            user = User.objects.filter(username=username)[0]
-            if user.security_answer == sec_answer:
-                return render(req, "pages/recover.html", {"password": user.password})
-
-            error = "Wrong security answer!"
-            return render(req, "pages/recover.html", {"error": error})
 
 
 @login_required
@@ -135,7 +113,7 @@ def view_handler(req: HttpRequest) -> HttpResponse:
 
         if res:
             res = res[0]
-            return render(req, "pages/view.html", {"name": res[1], "desc": res[2]})
+            return render(req, "pages/view.html", {"name": res[0], "desc": res[1]})
         else:
             return HttpResponseNotFound("Picture not found")
 

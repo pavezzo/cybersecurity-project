@@ -22,7 +22,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, re_path
 from django.views.static import serve
-from project.views import admin_panel_handler, index_handler, add_handler, create_user_handler, login_handler, view_handler, recover_account_handler, logout_handler
+from project.views import admin_panel_handler, index_handler, add_handler, create_user_handler, login_handler, view_handler, logout_handler
 
 
 urlpatterns = [
@@ -32,7 +32,6 @@ urlpatterns = [
     path("add/", add_handler, name="add"),
     path("create/", create_user_handler, name="create"),
     path("view", view_handler, name="view"),
-    path("recover", recover_account_handler, name="recover"),
     path("", index_handler, name="index"),
 
     # directory listing

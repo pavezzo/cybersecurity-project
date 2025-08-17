@@ -11,9 +11,5 @@
   <p>Password:</p>
   <input type="password" name="password" /><br/>
   <button type="submit">Login</button>
-  {% if recover %}
-  <br>
-  <a href="/recover?username={{ recover }}">Recover account: {{ recover }}</a>
-  {% endif %}
 </form>
 {% endblock %}
